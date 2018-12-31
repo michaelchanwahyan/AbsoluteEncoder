@@ -1,3 +1,4 @@
+#from datetime import datetime
 import time
 import RPi.GPIO as GPIO
 
@@ -36,28 +37,38 @@ def MSB():
 
 def readpos():
     GPIO.output(PIN_CS,0)
-    time.sleep(delay*2)
+    time.sleep(delay)
     MSB()
     data = [0]*ns
     
     for i in range(0,bitcount):
-        if i<10:
+        if i > 1 :
             #print i
             clockup()
+            time.sleep(delay)
             for j in range(0,ns):
-                data[j]<<=1  
-                data[j]|=GPIO.input(PIN_DAT[j])
+                data[j] <<= 1  
+                data[j] |=  GPIO.input(PIN_DAT[j])
             clockdown()
-        else:
-            for k in range(0,6):
-                clockup()
-                clockdown()
+            time.sleep(delay)
+        else :
+            clockup()
+            time.sleep(delay)
+            clockdown()
+            time.sleep(delay)
+       # else:
+       #     for k in range(0,6):
+       #         clockup()
+       #         clockdown()
     GPIO.output(PIN_CS,1)
     return data
+    time.sleep(0.00001)
 
 try:
     while(1):
         print readpos()
+        #data=readpos()
+        #print datetime.now().strftime("%H%M%S"), data
         time.sleep(0.001)
         #break
         
